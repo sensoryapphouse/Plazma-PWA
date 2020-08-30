@@ -5,7 +5,12 @@ window.onload = () => {
         navigator.serviceWorker
             .register('./sw.js');
     }
-    camStart();
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const hasXboxControls = urlParams.get('xbox');
+
+    camStart(hasXboxControls);
 }
 
 // Override the function with all the posibilities
@@ -29,7 +34,7 @@ function initGL() {
     try {
         gl = canvas.getContext("experimental-webgl");
         //            gl = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
-    } catch (e) {}
+    } catch (e) { }
     if (!gl) {
         alert("Could not initialise WebGL, sorry :-(");
     }
@@ -374,7 +379,7 @@ async function registerSW() {
     }
 }
 
-function camStart() {
+function camStart(hasXboxControls) {
     var splash = document.querySelector('splash');
     var button = document.querySelector('button');
     var button1 = document.querySelector('button1');
@@ -499,21 +504,22 @@ function camStart() {
 
     var gpad;
 
-
-    gamepads.addEventListener('connect', e => {
-        console.log('Gamepad connected:');
-        console.log(e.gamepad);
-        //     Highlight();
-        gpad = e.gamepad;
-        e.gamepad.addEventListener('buttonpress', e => showPressedButton(e.index));
-        //        e.gamepad.addEventListener('buttonrelease', e => removePressedButton(e.index));
-    });
-
-    gamepads.addEventListener('disconnect', e => {
-        console.log('Gamepad disconnected:');
-        console.log(e.gamepad);
-    });
-
-    gamepads.start();
+    if(hasXboxControls){
+        gamepads.addEventListener('connect', e => {
+            console.log('Gamepad connected:');
+            console.log(e.gamepad);
+            //     Highlight();
+            gpad = e.gamepad;
+            e.gamepad.addEventListener('buttonpress', e => showPressedButton(e.index));
+            //        e.gamepad.addEventListener('buttonrelease', e => removePressedButton(e.index));
+        });
+    
+        gamepads.addEventListener('disconnect', e => {
+            console.log('Gamepad disconnected:');
+            console.log(e.gamepad);
+        });
+    
+        gamepads.start();
+    }   
 
 }
