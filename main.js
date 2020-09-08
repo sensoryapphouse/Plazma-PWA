@@ -496,7 +496,7 @@ function camStart(hasXboxControls) {
             case 5: // RT
                 Action(2);
                 break;
-            case 10: // XBox
+            case 11: // XBox
                 break;
             default:
         }
