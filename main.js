@@ -461,7 +461,7 @@ function camStart(hasXboxControls) {
         e.preventDefault();
         Action(3);
     }
-    registerSW();
+    //registerSW();
 
 
     function showPressedButton(index) {
@@ -477,20 +477,23 @@ function camStart(hasXboxControls) {
             case 8:
             case 9:
             case 11:
-            case 12:
+            case 12://dpad up
             case 16:
                 Action(1);
                 break;
-            case 1: // B
+            case 3: // Y
+            case 13://DpadDown
                 Action(2);
                 break;
             case 2: // X
+            case 14://Dpadleft
                 Action(3);
                 break;
-            case 4: // LT
+            case 4: // LT    
                 Action(1);
                 break;
-            case 3: // Y
+            case 1: // B
+            case 15://Dpad right
                 Action(4);
                 break;
             case 5: // RT
