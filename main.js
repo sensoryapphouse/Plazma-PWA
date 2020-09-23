@@ -461,7 +461,7 @@ function camStart(hasXboxControls) {
         e.preventDefault();
         Action(3);
     }
-    //registerSW();
+    registerSW();
 
 
     function showPressedButton(index) {
