@@ -5,12 +5,7 @@ window.onload = () => {
         navigator.serviceWorker
             .register('./sw.js');
     }
-
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const hasXboxControls = urlParams.get('xbox');
-
-    camStart(hasXboxControls);
+    camStart();
 }
 
 // Override the function with all the posibilities
@@ -29,12 +24,12 @@ var keyState1 = 0;
 var keyState2 = 0;
 var keyState3 = 0;
 var keyState4 = 0;
-
 function initGL() {
     try {
         gl = canvas.getContext("experimental-webgl");
         //            gl = canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
-    } catch (e) { }
+    } catch (e) {
+    }
     if (!gl) {
         alert("Could not initialise WebGL, sorry :-(");
     }
@@ -153,7 +148,6 @@ function mvPopMatrix() {
 var ix = 0.0;
 var end;
 var st = new Date().getTime();
-
 function setUniforms() {
     end = new Date().getTime();
     gl.uniformMatrix4fv(current_program.pMatrixUniform, false, pMatrix);
@@ -162,7 +156,7 @@ function setUniforms() {
     gl.uniform2f(current_program.mouse, mouseX, mouseY);
     gl.uniform1i(current_program.indexUniform, ix);
     //        gl.uniform1f(current_program.time, performance.now()/1000.0);
-    gl.uniform1f(current_program.time, ((end - st) % 1000000) / 1000.0);
+    gl.uniform1f(current_program.time, ((end - st) % 1000000) / 4000.0);
     gl.uniform1f(current_program.Param1, Param1);
     gl.uniform1f(current_program.Param2, Param2);
     gl.uniform1f(current_program.Param3, Math.pow(Param3, 1.5));
@@ -171,7 +165,6 @@ function setUniforms() {
 var cubeVertexPositionBuffer;
 var cubeVertexTextureCoordBuffer;
 var cubeVertexIndexBuffer;
-
 function initBuffers() {
     cubeVertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
@@ -234,7 +227,8 @@ function webGLStart() {
     if (screen.width > 1500 || screen.height > 1500) {
         canvas.width = 1024;
         canvas.height = 1024;
-    } else {
+    }
+    else {
         canvas.width = 512;
         canvas.height = 512;
     }
@@ -252,7 +246,6 @@ var index = 0;
 var player;
 var player1;
 var player2;
-
 function PlaySound(i) {
     switch (i) {
         case 1:
@@ -279,7 +272,6 @@ function PlaySound(i) {
             break;
     }
 }
-
 function Action(i) {
     switch (i) {
         case 1: // Colour (ish))
@@ -309,6 +301,20 @@ function Action(i) {
             break;
     }
 }
+function toggleButtons() {
+    var button = document.querySelector('button');
+    var button1 = document.querySelector('button1');
+    var button2 = document.querySelector('button2');
+    var button3 = document.querySelector('button3');
+    var buttonl = document.querySelector('buttonl');
+    var buttonr = document.querySelector('buttonr');
+    button.hidden = !button.hidden;
+    button1.hidden = !button1.hidden;
+    button2.hidden = !button2.hidden;
+    button3.hidden = !button3.hidden;
+    buttonl.hidden = !buttonl.hidden;
+    buttonr.hidden = !buttonr.hidden;
+}
 
 function MonitorKeyDown(e) { // stop autorepeat of keys with KeyState1-4 flags
     if (!e) e = window.event;
@@ -316,18 +322,24 @@ function MonitorKeyDown(e) { // stop autorepeat of keys with KeyState1-4 flags
         if (keyState1 == 0)
             Action(4);
         keyState1 = 1;
-    } else if (e.keyCode == 50) {
+    }
+    else if (e.keyCode == 50) {
         if (keyState2 == 0)
             Action(3);
         keyState2 = 1;
-    } else if (e.keyCode == 51 || e.keyCode == 13) {
+    }
+    else if (e.keyCode == 51 || e.keyCode == 13) {
         if (keyState3 == 0)
             Action(1);
         keyState3 = 1;
-    } else if (e.keyCode == 52) {
+    }
+    else if (e.keyCode == 52) {
         if (keyState4 == 0)
             Action(2);
         keyState4 = 1;
+    }
+    else if (e.keyCode == 53) {
+        toggleButtons();
     }
     return false;
 }
@@ -336,18 +348,20 @@ function MonitorKeyUp(e) {
     if (!e) e = window.event;
     if (e.keyCode == 32 || e.keyCode == 49) {
         keyState1 = 0;
-    } else if (e.keyCode == 50) {
+    }
+    else if (e.keyCode == 50) {
         keyState2 = 0;
-    } else if (e.keyCode == 51 || e.keyCode == 13) {
+    }
+    else if (e.keyCode == 51 || e.keyCode == 13) {
         keyState3 = 0;
-    } else if (e.keyCode == 52) {
+    }
+    else if (e.keyCode == 52) {
         keyState4 = 0;
     }
     return false;
 }
 
 var mouseState = 0;
-
 function MonitorMouseDown(e) {
     if (!e) e = window.event;
     if (e.button == 0) {
@@ -355,6 +369,7 @@ function MonitorMouseDown(e) {
         mouseX = e.clientX / canvas.scrollWidth;
         mouseY = 1.0 - e.clientY / canvas.scrollHeight;
     }
+    toggleButtons();
     return false;
 }
 
@@ -365,21 +380,21 @@ function MonitorMouseUp(e) {
     }
     return false;
 }
-
-async function registerSW() {
-    if ('serviceWorker' in navigator) {
-        try {
-            await navigator.serviceWorker.register('sw.js');
-            console.log("Service worker has been registered");
-        } catch (e) {
-            alert('ServiceWorker registration failed. Sorry about that.');
-        }
-    } else {
-        document.querySelector('.alert').removeAttribute('hidden');
+/*Duplication of SW Code?
+async function registerSW() { 
+  if ('serviceWorker' in navigator) {
+    try {
+      await navigator.serviceWorker.register('sw.js');
+       console.log("Service worker has been registered");
+    } catch (e) {
+      alert('ServiceWorker registration failed. Sorry about that.'); 
     }
-}
+  } else {
+    document.querySelector('.alert').removeAttribute('hidden'); 
+  }
+}*/
 
-function camStart(hasXboxControls) {
+function camStart() {
     var splash = document.querySelector('splash');
     var button = document.querySelector('button');
     var button1 = document.querySelector('button1');
@@ -419,6 +434,7 @@ function camStart(hasXboxControls) {
     }
     canvas.ontouchstart = function (e) {
         e.preventDefault();
+        toggleButtons();
         var touchs = e.changedTouches;
         mouseX = touchs[0].clientX / canvas.scrollWidth;
         mouseY = 1.0 - touchs[0].clientY / canvas.scrollHeight;
@@ -461,65 +477,5 @@ function camStart(hasXboxControls) {
         e.preventDefault();
         Action(3);
     }
-    registerSW();
-
-
-    function showPressedButton(index) {
-        console.log("Press: ", index);
-        if (!splash.hidden) {
-            splash.hidden = true;
-        } else switch (index) {
-            case 0: // A
-                Action(1);
-                break;
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 11:
-            case 12:
-            case 16:
-                Action(1);
-                break;
-            case 1: // B
-                Action(2);
-                break;
-            case 2: // X
-                Action(3);
-                break;
-            case 4: // LT
-                Action(1);
-                break;
-            case 3: // Y
-                Action(4);
-                break;
-            case 5: // RT
-                Action(2);
-                break;
-            case 10: // XBox
-                break;
-            default:
-        }
-    }
-
-    var gpad;
-
-    if(hasXboxControls){
-        gamepads.addEventListener('connect', e => {
-            console.log('Gamepad connected:');
-            console.log(e.gamepad);
-            //     Highlight();
-            gpad = e.gamepad;
-            e.gamepad.addEventListener('buttonpress', e => showPressedButton(e.index));
-            //        e.gamepad.addEventListener('buttonrelease', e => removePressedButton(e.index));
-        });
-    
-        gamepads.addEventListener('disconnect', e => {
-            console.log('Gamepad disconnected:');
-            console.log(e.gamepad);
-        });
-    
-        gamepads.start();
-    }   
-
+    //registerSW();
 }
