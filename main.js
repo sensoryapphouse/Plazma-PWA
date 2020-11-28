@@ -1,5 +1,19 @@
+var player;
+var player1;
+var player2;
+
 window.onload = () => {
     'use strict';
+
+    player = document.getElementById('audio');
+    player.loop = false;
+    player.load();
+
+    player1 = document.getElementById('audio1');
+    player1.load();
+
+    player2 = document.getElementById('audio2');
+    player2.load();
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
@@ -243,31 +257,16 @@ function webGLStart() {
 }
 
 var index = 0;
-var player;
-var player1;
-var player2;
+
 function PlaySound(i) {
     switch (i) {
         case 1:
-            if (player == undefined) {
-                player = document.getElementById('audio');
-                player.loop = false;
-            }
-            player.load();
             player.play();
             break;
         case 2:
-            if (player1 == undefined) {
-                player1 = document.getElementById('audio1');
-            }
-            player1.load();
             player1.play();
             break;
         case 3:
-            if (player2 == undefined) {
-                player2 = document.getElementById('audio2');
-            }
-            player2.load();
             player2.play();
             break;
     }
@@ -477,72 +476,5 @@ function camStart() {
         e.preventDefault();
         Action(3);
     }
-<<<<<<< HEAD
     //registerSW();
-=======
-    registerSW();
-
-
-    function showPressedButton(index) {
-        console.log("Press: ", index);
-        if (!splash.hidden) {
-            splash.hidden = true;
-        } else switch (index) {
-            case 0: // A
-                Action(1);
-                break;
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 11:
-            case 12://dpad up
-            case 16:
-                Action(1);
-                break;
-            case 3: // Y
-            case 13://DpadDown
-                Action(2);
-                break;
-            case 2: // X
-            case 14://Dpadleft
-                Action(3);
-                break;
-            case 4: // LT    
-                Action(1);
-                break;
-            case 1: // B
-            case 15://Dpad right
-                Action(4);
-                break;
-            case 5: // RT
-                Action(2);
-                break;
-            case 10: // XBox
-                break;
-            default:
-        }
-    }
-
-    var gpad;
-
-    if(hasXboxControls){
-        gamepads.addEventListener('connect', e => {
-            console.log('Gamepad connected:');
-            console.log(e.gamepad);
-            //     Highlight();
-            gpad = e.gamepad;
-            e.gamepad.addEventListener('buttonpress', e => showPressedButton(e.index));
-            //        e.gamepad.addEventListener('buttonrelease', e => removePressedButton(e.index));
-        });
-    
-        gamepads.addEventListener('disconnect', e => {
-            console.log('Gamepad disconnected:');
-            console.log(e.gamepad);
-        });
-    
-        gamepads.start();
-    }   
-
->>>>>>> cb2c8b8739855c526d6e7f4d9192ef57b2a9f033
 }
